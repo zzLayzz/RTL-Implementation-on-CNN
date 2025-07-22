@@ -1,0 +1,1 @@
+Warning (10268): Verilog HDL information at maxpool2x2.v(21): always construct contains both blocking and non-blocking assignments File: D:/Uni/Conv3x3/maxpool2x2/maxpool2x2.v Line: 21
