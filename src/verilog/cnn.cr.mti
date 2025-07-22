@@ -1,0 +1,127 @@
+D:/Uni/Conv3x3/fc_layer/fc_layer.v {1 {vlog -work work -stats=none {D:\Uni\Conv3x3\fc_layer\fc_layer.v}
+Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+-- Compiling module fc_layer
+
+Top level modules:
+	fc_layer
+
+} {} {}} D:/Uni/Conv3x3/conv3x3_time_multiplex/conv3x3_time_multiplex.v {1 {vlog -work work -stats=none D:/Uni/Conv3x3/conv3x3_time_multiplex/conv3x3_time_multiplex.v
+Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+-- Compiling module conv3x3_time_multiplex
+
+Top level modules:
+	conv3x3_time_multiplex
+
+} {} {}} D:/Uni/FYP/conv3x3_time_multiplex2.v {1 {vlog -work work -stats=none D:/Uni/FYP/conv3x3_time_multiplex2.v
+Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+-- Compiling module conv3x3_time_multiplex2
+
+Top level modules:
+	conv3x3_time_multiplex2
+
+} {} {}} D:/Uni/FYP/conv2w.v {1 {vlog -work work -stats=none D:/Uni/FYP/conv2w.v
+Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+-- Compiling module conv2w
+
+Top level modules:
+	conv2w
+
+} {} {}} D:/Uni/FYP/fc1w.v {1 {vlog -work work -stats=none D:/Uni/FYP/fc1w.v
+Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+-- Compiling module fc1w
+
+Top level modules:
+	fc1w
+
+} {} {}} D:/Uni/FYP/conv1b.v {1 {vlog -work work -stats=none D:/Uni/FYP/conv1b.v
+Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+-- Compiling module conv1b
+
+Top level modules:
+	conv1b
+
+} {} {}} D:/Uni/FYP/cnn_tb.v {1 {vlog -work work -stats=none {D:\Uni\FYP\cnn_tb.v}
+Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+-- Compiling module cnn_tb
+
+Top level modules:
+	cnn_tb
+
+} {} {}} D:/Uni/Conv3x3/maxpool2x2/maxpool2x2.v {1 {vlog -work work -stats=none {D:\Uni\Conv3x3\maxpool2x2\maxpool2x2.v}
+Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+-- Compiling module maxpool2x2
+
+Top level modules:
+	maxpool2x2
+
+} {} {}} D:/Uni/Conv3x3/conv3x3_core/conv3x3_core.v {1 {vlog -work work -stats=none D:/Uni/Conv3x3/conv3x3_core/conv3x3_core.v
+Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+-- Compiling module conv3x3_core
+
+Top level modules:
+	conv3x3_core
+
+} {} {}} D:/Uni/FYP/fc2b.v {1 {vlog -work work -stats=none D:/Uni/FYP/fc2b.v
+Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+-- Compiling module fc2b
+
+Top level modules:
+	fc2b
+
+} {} {}} D:/Uni/FYP/conv1w.v {1 {vlog -work work -stats=none D:/Uni/FYP/conv1w.v
+Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+-- Compiling module conv1w
+
+Top level modules:
+	conv1w
+
+} {} {}} D:/Uni/Conv3x3/conv3x3_time_multiplex/sliding_window_3x3.v {1 {vlog -work work -stats=none D:/Uni/Conv3x3/conv3x3_time_multiplex/sliding_window_3x3.v
+Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+-- Compiling module sliding_window_3x3
+
+Top level modules:
+	sliding_window_3x3
+
+} {} {}} D:/Uni/FYP/cnn.v {1 {vlog -work work -stats=none {D:\Uni\FYP\cnn.v}
+Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+-- Compiling module cnn
+
+Top level modules:
+	cnn
+
+} {} {}} D:/Uni/Conv3x3/softmax/softmax.v {1 {vlog -work work -stats=none D:/Uni/Conv3x3/softmax/softmax.v
+Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+-- Compiling module softmax
+
+Top level modules:
+	softmax
+
+} {} {}} D:/Uni/FYP/fc2w.v {1 {vlog -work work -stats=none D:/Uni/FYP/fc2w.v
+Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+-- Compiling module fc2w
+
+Top level modules:
+	fc2w
+
+} {} {}} D:/Uni/FYP/conv2b.v {1 {vlog -work work -stats=none D:/Uni/FYP/conv2b.v
+Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+-- Compiling module conv2b
+
+Top level modules:
+	conv2b
+
+} {} {}} D:/Uni/FYP/fc1b.v {1 {vlog -work work -stats=none D:/Uni/FYP/fc1b.v
+Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+-- Compiling module fc1b
+
+Top level modules:
+	fc1b
+
+} {} {}} D:/Uni/Conv3x3/relu/relu.v {1 {vlog -work work -stats=none D:/Uni/Conv3x3/relu/relu.v
+Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+-- Compiling module relu
+
+Top level modules:
+	relu
+
+} {} {}}

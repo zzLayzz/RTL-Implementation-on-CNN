@@ -1,0 +1,215 @@
+`timescale 1ns/1ps
+
+module cnn #(
+    parameter DATA_WIDTH        = 8,
+    parameter ACC_WIDTH         = 24,
+    parameter IMG_WIDTH         = 28,
+    parameter NUM_FILTERS1      = 32,
+    parameter NUM_FILTERS2      = 64,
+    parameter FC1_OUT_SIZE      = 64, 
+	 parameter FC2_OUT_SIZE      = 64, 
+    parameter QUANT             = 0
+)(
+    input  wire                          clk,
+    input  wire                          rst_n,
+    input  wire                          valid_in,
+    input  wire [DATA_WIDTH-1:0]         pixel_in,
+    output wire                          valid_out,
+    output wire [3:0]                    class_out  // 10 classes: 0..9
+);
+
+    // --- First Conv Block ---
+    wire conv1_valid, relu1_valid, pool1_valid;
+    wire signed [DATA_WIDTH-1:0] conv1_out, relu1_out, pool1_out;
+
+    conv3x3_time_multiplex #(
+        .DATA_WIDTH(DATA_WIDTH),
+        .ACC_WIDTH(ACC_WIDTH),
+        .QUANT(QUANT),
+        .IMG_WIDTH(IMG_WIDTH),
+        .NUM_FILTERS(NUM_FILTERS1)
+    ) conv1 (
+        .clk       (clk),
+        .rst_n     (rst_n),
+        .valid_in  (valid_in),
+        .pixel_in  (pixel_in),
+        .valid_out (conv1_valid),
+        .pi xel_out (conv1_out)
+    );
+
+    relu #( .DATA_WIDTH(DATA_WIDTH) ) relu1 (
+        .clk        (clk),
+        .rst_n      (rst_n),
+        .valid_in   (conv1_valid),
+        .data_in    (conv1_out),
+        .valid_out  (relu1_valid),
+        .data_out   (relu1_out)
+    );
+
+    maxpool2x2 #( .DATA_WIDTH(DATA_WIDTH), .IMG_WIDTH(IMG_WIDTH-2) ) pool1 (
+        .clk        (clk),
+        .rst_n      (rst_n),
+        .valid_in   (relu1_valid),
+        .pixel_in   (relu1_out),
+        .valid_out  (pool1_valid),
+        .pixel_out  (pool1_out)
+    );
+
+    // --- Second Conv Block ---
+    localparam IMG_WIDTH2 = ((IMG_WIDTH-2)/2); // A
+    wire conv2_valid, relu2_valid, pool2_valid;
+    wire signed [DATA_WIDTH-1:0] conv2_out, relu2_out, pool2_out;
+
+    conv3x3_time_multiplex2 #(
+        .DATA_WIDTH(DATA_WIDTH),
+        .ACC_WIDTH(ACC_WIDTH),
+        .QUANT(QUANT),
+        .IMG_WIDTH(IMG_WIDTH2),
+        .NUM_FILTERS(NUM_FILTERS2)
+    ) conv2 (
+        .clk       (clk),
+        .rst_n     (rst_n),
+        .valid_in  (pool1_valid),
+        .pixel_in  (pool1_out),
+        .valid_out (conv2_valid),
+        .pixel_out (conv2_out)
+    );
+
+    relu #( .DATA_WIDTH(DATA_WIDTH) ) relu2 (
+        .clk        (clk),
+        .rst_n      (rst_n),
+        .valid_in   (conv2_valid),
+        .data_in    (conv2_out),
+        .valid_out  (relu2_valid),
+        .data_out   (relu2_out)
+    );
+
+    maxpool2x2 #( .DATA_WIDTH(DATA_WIDTH), .IMG_WIDTH(IMG_WIDTH2-2) 
+	 ) pool2 (
+        .clk        (clk),
+        .rst_n      (rst_n),
+        .valid_in   (relu2_valid),
+        .pixel_in   (relu2_out),
+        .valid_out  (pool2_valid),
+        .pixel_out  (pool2_out)
+    );
+
+    // --- Flatten for FC1 ---
+    // For this streaming example, assume FC1 expects one value per clock (serial).
+    // Buffering logic may be needed if FC expects parallel input.
+
+    // --- First Dense Layer (FC1) ---
+    wire fc1_valid;
+    wire signed [FC1_OUT_SIZE*ACC_WIDTH-1:0] fc1_out;
+
+    // FC1 weight ROM
+		fc1w weight_fc1_rom (
+			 .rdaddress    (fc1_weight_addr), // [ADDR_WIDTH-1:0]
+			 .wraddress  (5'b0),
+			 .clock      (clk),
+			 .data       ({DATA_WIDTH{1'b0}}), // Tie to zero for ROM
+			 .wren       (1'b0),
+			 .q          (fc1_weight_din)      // [DATA_WIDTH-1:0]
+		);
+
+		// FC1 bias ROM
+		fc1b bias_fc1_rom (
+			 .clock      (clk),
+			 .data       ({ACC_WIDTH{1'b0}}), // Tie to zero for ROM
+			 .rdaddress  (fc1_bias_addr),     // [ADDR_WIDTH-1:0]
+			 .wraddress  (5'b0),
+			 .wren       (1'b0),
+			 .q          (fc1_bias_din)       // [ACC_WIDTH-1:0]
+		);
+
+			 fc_layer #(
+        .DATA_WIDTH(DATA_WIDTH),
+        .ACC_WIDTH(ACC_WIDTH),
+        .IN_SIZE( ((IMG_WIDTH2-2)/2) * ((IMG_WIDTH2-2)/2) * NUM_FILTERS2 ),
+        .OUT_SIZE(FC1_OUT_SIZE)
+    ) fc1 (
+        .clk(clk),
+        .reset(rst_n),
+        .start(fc1_start),
+        .valid_in(pool2_valid),
+        .data_in(pool2_out),
+        .weight_addr(fc1_weight_addr),
+        .weight_din(fc1_weight_din),
+        .weight_en(fc1_weight_en),
+        .bias_addr(fc1_bias_addr),
+        .bias_din(fc1_bias_din),
+        .valid_out(fc1_valid),
+        .out_data(fc1_out),
+        .out_idx(fc1_idx),
+        .ready_in(fc1_ready)
+    );
+
+    // --- ReLU after FC1 ---
+    wire signed [ACC_WIDTH-1:0] fc1_relu [0:FC1_OUT_SIZE-1];
+    genvar k;
+    generate
+        for (k = 0; k < FC1_OUT_SIZE; k = k + 1) begin: relu_fc1_block
+            assign fc1_relu[k] = (fc1_out[k] > 0) ? fc1_out[k] : 0;
+        end
+    endgenerate
+
+	 // FC2 weight ROM
+		fc2w weight_fc2_rom (
+			 .rdaddress    (fc2_weight_addr), // [ADDR_WIDTH-1:0]
+			 .wraddress  (5'b0),
+			 .clock      (clk),
+			 .data       ({DATA_WIDTH{1'b0}}), // Tie to zero for ROM
+			 .wren       (1'b0),
+			 .q          (fc2_weight_din)      // [DATA_WIDTH-1:0]
+		);
+
+		// FC2 bias ROM
+		fc2b bias_fc2_rom (
+			 .clock      (clk),
+			 .data       ({ACC_WIDTH{1'b0}}), // Tie to zero for ROM
+			 .rdaddress  (fc2_bias_addr),     // [ADDR_WIDTH-1:0]
+			 .wraddress  (5'b0),
+			 .wren       (1'b0),
+			 .q          (fc2_bias_din)       // [ACC_WIDTH-1:0]
+		);
+
+    // --- Second Dense Layer (FC2) ---
+    wire fc2_valid;
+    wire signed [FC2_OUT_SIZE*ACC_WIDTH-1:0] fc2_out;
+
+    fc_layer #(
+        .DATA_WIDTH(DATA_WIDTH),
+        .ACC_WIDTH(ACC_WIDTH),
+        .IN_SIZE(FC1_OUT_SIZE),
+        .OUT_SIZE(FC2_OUT_SIZE)
+    ) fc2 (
+        .clk(clk),
+        .reset(rst_n),
+        .start(fc2_start),
+        .valid_in(fc1_valid),
+        .data_in(fc1_relu[fc2_in_idx]), // Serialize fc1_relu into fc2
+        .weight_addr(fc2_weight_addr),
+        .weight_din(fc2_weight_din),
+        .weight_en(fc2_weight_en),
+        .bias_addr(fc2_bias_addr),
+        .bias_din(fc2_bias_din),
+        .valid_out(fc2_valid),
+        .out_data(fc2_out),
+        .out_idx(fc2_idx),
+        .ready_in(fc2_ready)
+    );
+
+    // --- Argmax for Class Output ---
+    reg [3:0] class_idx;
+    integer i;
+    always @(*) begin
+        class_idx = 0;
+        for (i = 1; i < FC2_OUT_SIZE; i = i + 1)
+            if (fc2_out[i] > fc2_out[class_idx])
+                class_idx = i[3:0];
+    end
+
+    assign class_out = class_idx;
+    assign valid_out = fc2_valid;
+
+endmodule

@@ -1,0 +1,140 @@
+`timescale 1ns/1ps
+
+module cnn_tb;
+
+    parameter DATA_WIDTH = 8;
+    parameter ACC_WIDTH = 24;
+    parameter IMG_WIDTH  = 28;
+    parameter FC1_OUT_SIZE = 64;
+    parameter FC2_OUT_SIZE = 64;
+    parameter EXPECTED_FC1_PIXELS = 100; // Adjust based on output feature size
+
+    reg clk, rst_n, valid_in;
+    reg [DATA_WIDTH-1:0] pixel_in;
+    wire valid_out;
+    wire [3:0] class_out;
+
+    cnn dut (
+        .clk(clk), .rst_n(rst_n),
+        .valid_in(valid_in), .pixel_in(pixel_in),
+        .valid_out(valid_out), .class_out(class_out)
+    );
+
+    initial clk = 0;
+    always #5 clk = ~clk;
+
+    wire conv1_valid = dut.conv1_valid;
+    wire [DATA_WIDTH-1:0] conv1_out = dut.conv1_out;
+    wire relu1_valid = dut.relu1_valid;
+    wire [DATA_WIDTH-1:0] relu1_out = dut.relu1_out;
+    wire pool1_valid = dut.pool1_valid;
+    wire [DATA_WIDTH-1:0] pool1_out = dut.pool1_out;
+
+    wire conv2_valid = dut.conv2_valid;
+    wire [DATA_WIDTH-1:0] conv2_out = dut.conv2_out;
+    wire relu2_valid = dut.relu2_valid;
+    wire [DATA_WIDTH-1:0] relu2_out = dut.relu2_out;
+    wire pool2_valid = dut.pool2_valid;
+    wire [DATA_WIDTH-1:0] pool2_out = dut.pool2_out;
+
+    wire fc1_valid = dut.fc1_valid;
+    wire fc2_valid = dut.fc2_valid;
+
+    wire signed [ACC_WIDTH-1:0] fc1_out_array [0:FC1_OUT_SIZE-1];
+    wire signed [ACC_WIDTH-1:0] fc2_out_array [0:FC2_OUT_SIZE-1];
+
+    genvar idx;
+    generate
+        for (idx = 0; idx < FC1_OUT_SIZE; idx = idx + 1)
+            assign fc1_out_array[idx] = dut.fc1_out[idx*ACC_WIDTH +: ACC_WIDTH];
+        for (idx = 0; idx < FC2_OUT_SIZE; idx = idx + 1)
+            assign fc2_out_array[idx] = dut.fc2_out[idx*ACC_WIDTH +: ACC_WIDTH];
+    endgenerate
+
+    initial begin
+        $dumpfile("cnn_tb.vcd");
+        $dumpvars(0, cnn_tb);
+    end
+
+    reg [DATA_WIDTH-1:0] digit_img [0:9][0:783];
+    integer i, j, d, px;
+    initial begin
+        for (d = 0; d < 10; d = d + 1)
+            for (i = 0; i < 28; i = i + 1)
+                for (j = 0; j < 28; j = j + 1)
+                    case (d)
+                        0: digit_img[d][i*28 + j] = (i < 3 || i > 24 || j < 3 || j > 24) ? 8'd200 : 8'd0;
+                        1: digit_img[d][i*28 + j] = (j > 12 && j < 16) ? 8'd200 : 8'd0;
+                        2: digit_img[d][i*28 + j] = (i < 3 || i > 24 || i == j) ? 8'd200 : 8'd0;
+                        3: digit_img[d][i*28 + j] = (i < 3 || i > 24 || j > 20) ? 8'd200 : 8'd0;
+                        4: digit_img[d][i*28 + j] = ((j > 20) || (i > 12 && j < 6)) ? 8'd200 : 8'd0;
+                        5: digit_img[d][i*28 + j] = (i < 3 || i > 24 || (i > 12 && j > 20)) ? 8'd200 : 8'd0;
+                        6: digit_img[d][i*28 + j] = (i > 12 && (j < 6 || j > 20)) ? 8'd200 : 8'd0;
+                        7: digit_img[d][i*28 + j] = (i < 3 || j == (27 - i)) ? 8'd200 : 8'd0;
+                        8: digit_img[d][i*28 + j] = ((i < 3 || i > 24 || i == 13) || (j < 4 || j > 23)) ? 8'd200 : 8'd0;
+                        9: digit_img[d][i*28 + j] = (i < 10 || j > 20) ? 8'd200 : 8'd0;
+                        default: digit_img[d][i*28 + j] = 8'd0;
+                    endcase
+    end
+
+    integer predicted_digit;
+    integer pool2_counter;
+
+    initial begin
+        rst_n = 0; valid_in = 0; pixel_in = 0; pool2_counter = 0;
+        #20; rst_n = 1; #10;
+
+        for (d = 0; d < 10; d = d + 1) begin
+            predicted_digit = -1;
+            $display("=== Testing digit %0d ===", d);
+            valid_in = 1;
+            for (px = 0; px < 784; px = px + 1) begin
+                pixel_in = digit_img[d][px];
+                #10;
+            end
+            valid_in = 0;
+            repeat (1000) @(posedge clk);
+            if (predicted_digit != -1)
+                $display("Predicted class for digit %0d is %0d\n", d, predicted_digit);
+            else
+                $display("No prediction for digit %0d (valid_out never triggered)\n", d);
+        end
+
+        $display("All tests complete.");
+        $finish;
+    end
+
+    always @(posedge clk) begin
+        if (conv1_valid) $display("conv1_out  = %0d", conv1_out);
+        if (relu1_valid) $display("relu1_out  = %0d", relu1_out);
+        if (pool1_valid) $display("pool1_out  = %0d", pool1_out);
+        if (conv2_valid) $display("conv2_out  = %0d", conv2_out);
+        if (relu2_valid) $display("relu2_out  = %0d", relu2_out);
+        if (pool2_valid) $display("pool2_out  = %0d", pool2_out);
+        if (pool2_valid) begin
+            pool2_counter <= pool2_counter + 1;
+				$display("pool2_valid pixel count = %0d", pool2_counter);
+            if (pool2_counter == EXPECTED_FC1_PIXELS - 1) begin
+                $display("\n Enough pixels collected for FC1 input at time %0t", $time);
+            end
+        end
+
+        if (fc1_valid) begin
+            $display("\n FC1 VALID signal HIGH at time %0t", $time);
+            $display("\n FC1 output:");
+            for (i = 0; i < 10; i = i + 1)
+                $display("fc1_out[%0d] = %0d", i, fc1_out_array[i]);
+        end
+        if (fc2_valid) begin
+            $display("\n FC2 output:");
+            for (i = 0; i < 10; i = i + 1)
+                $display("fc2_out[%0d] = %0d", i, fc2_out_array[i]);
+        end
+
+        if (valid_out) begin
+            predicted_digit <= class_out;
+            $display("class_out = %0d at time %0t", class_out, $time);
+        end
+    end
+
+endmodule
