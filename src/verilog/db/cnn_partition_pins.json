@@ -1,0 +1,73 @@
+{
+	"partitions" : [
+		{
+			"name" : "Top",
+			"pins" : [
+				{
+					"name" : "valid_out",
+					"strict" : false
+				},
+				{
+					"name" : "class_out[0]",
+					"strict" : false
+				},
+				{
+					"name" : "class_out[1]",
+					"strict" : false
+				},
+				{
+					"name" : "class_out[2]",
+					"strict" : false
+				},
+				{
+					"name" : "class_out[3]",
+					"strict" : false
+				},
+				{
+					"name" : "rst_n",
+					"strict" : false
+				},
+				{
+					"name" : "clk",
+					"strict" : false
+				},
+				{
+					"name" : "valid_in",
+					"strict" : false
+				},
+				{
+					"name" : "pixel_in[0]",
+					"strict" : false
+				},
+				{
+					"name" : "pixel_in[1]",
+					"strict" : false
+				},
+				{
+					"name" : "pixel_in[2]",
+					"strict" : false
+				},
+				{
+					"name" : "pixel_in[3]",
+					"strict" : false
+				},
+				{
+					"name" : "pixel_in[4]",
+					"strict" : false
+				},
+				{
+					"name" : "pixel_in[5]",
+					"strict" : false
+				},
+				{
+					"name" : "pixel_in[6]",
+					"strict" : false
+				},
+				{
+					"name" : "pixel_in[7]",
+					"strict" : false
+				}
+			]
+		}
+	]
+}

@@ -1,0 +1,166 @@
+m255
+K4
+z2
+!s11f vlog 2020.1 2020.02, Feb 28 2020
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+Z0 dD:/Uni/Conv3x3/conv3x3_time_multiplex
+vbias
+Z1 !s110 1749441755
+!i10b 1
+!s100 4UJ6:7<zU;=4oS=iGhk:T3
+Z2 !s11b Dg1SIo80bB@j0V0VzS_@n1
+I?563QzCkZ:I4BzFU>RKH33
+Z3 VDg1SIo80bB@j0V0VzS_@n1
+R0
+w1749403213
+8bias.v
+Fbias.v
+!i122 41
+L0 40 75
+Z4 OV;L;2020.1;71
+r1
+!s85 0
+31
+Z5 !s108 1749441755.000000
+!s107 tb_conv3x3_top.v|conv3x3_time_multiplex.v|conv3x3_core.v|sliding_window_3x3.v|bias.v|weight.v|
+Z6 !s90 -reportprogress|300|weight.v|bias.v|sliding_window_3x3.v|conv3x3_core.v|conv3x3_time_multiplex.v|tb_conv3x3_top.v|
+!i113 1
+Z7 tCvgOpt 0
+vconv3x3_core
+R1
+!i10b 1
+!s100 RE@NeHMcDS[SzZ1iTJOUQ2
+R2
+IY<b8XDLiQQMSg?mC`Kkg_0
+R3
+R0
+w1747934260
+8conv3x3_core.v
+Fconv3x3_core.v
+!i122 41
+L0 1 61
+R4
+r1
+!s85 0
+31
+R5
+Z8 !s107 tb_conv3x3_top.v|conv3x3_time_multiplex.v|conv3x3_core.v|sliding_window_3x3.v|bias.v|weight.v|
+R6
+!i113 1
+R7
+vconv3x3_time_multiplex
+R1
+!i10b 1
+!s100 afi]zQddfFUIzHTOQbmO[2
+R2
+I0k]:SA3gC@JVebfga1_AU0
+R3
+R0
+w1748948826
+8conv3x3_time_multiplex.v
+Fconv3x3_time_multiplex.v
+!i122 41
+L0 3 175
+R4
+r1
+!s85 0
+31
+R5
+R8
+R6
+!i113 1
+R7
+vsliding_window_3x3
+R1
+!i10b 1
+!s100 AZM:Uo3d?n0cOfZB=Bkc60
+R2
+IZLQDTE8XSAlW9W3NUZ[kb1
+R3
+R0
+w1747901583
+8sliding_window_3x3.v
+Fsliding_window_3x3.v
+!i122 41
+L0 1 60
+R4
+r1
+!s85 0
+31
+R5
+R8
+R6
+!i113 1
+R7
+vtb_conv3x3_top
+R1
+!i10b 1
+!s100 VZb`[6[Z;Mn0KnniY0UgW1
+R2
+Ij[hW57EOl_bjUzzR7kmdQ2
+R3
+R0
+w1749404350
+8tb_conv3x3_top.v
+Ftb_conv3x3_top.v
+!i122 41
+L0 3 63
+R4
+r1
+!s85 0
+31
+R5
+R8
+R6
+!i113 1
+R7
+vtb_weight_bias_roms
+!s110 1749404298
+!i10b 1
+!s100 bR3<_LI<^g[YE@@Nn=8<i2
+R2
+I6B^c1>3Cm;oD_R[U1:14I1
+R3
+R0
+w1749402406
+8D:/Uni/Conv3x3/conv3x3_time_multiplex/tb_weight_bias_roms.v
+FD:/Uni/Conv3x3/conv3x3_time_multiplex/tb_weight_bias_roms.v
+!i122 36
+L0 3 58
+R4
+r1
+!s85 0
+31
+!s108 1749404298.000000
+!s107 D:/Uni/Conv3x3/conv3x3_time_multiplex/tb_weight_bias_roms.v|
+!s90 -reportprogress|300|-work|work|-stats=none|D:/Uni/Conv3x3/conv3x3_time_multiplex/tb_weight_bias_roms.v|
+!i113 1
+o-work work
+R7
+vweight
+R1
+!i10b 1
+!s100 HoQ_Y_Ud<k6neH?L_MKXC3
+R2
+Ii38]l`ZUA98U<6EHzCUbl1
+R3
+R0
+w1748946176
+8weight.v
+Fweight.v
+!i122 41
+L0 40 67
+R4
+r1
+!s85 0
+31
+R5
+R8
+R6
+!i113 1
+R7

@@ -1,0 +1,16 @@
+WIDTH=8;
+DEPTH=10;
+ADDRESS_RADIX=UNS;
+DATA_RADIX=UNS;
+CONTENT BEGIN
+  0 : 40;
+  1 : 92;
+  2 : 140;
+  3 : 191;
+  4 : 30;
+  5 : 225;
+  6 : 129;
+  7 : 5;
+  8 : 91;
+  9 : 12;
+END;

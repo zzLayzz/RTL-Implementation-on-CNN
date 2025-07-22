@@ -1,0 +1,66 @@
+module fc_layer #(
+    parameter DATA_WIDTH=8,
+    parameter ACC_WIDTH=24,
+    parameter IN_SIZE=16,
+    parameter OUT_SIZE=10
+)(
+    input clk, reset, start,
+    input valid_in,
+    input signed [DATA_WIDTH-1:0] data_in,
+    output reg [$clog2(OUT_SIZE*IN_SIZE)-1:0] weight_addr,
+    input signed [DATA_WIDTH-1:0] weight_din,
+    output reg weight_en,
+    output reg [$clog2(OUT_SIZE)-1:0] bias_addr,
+    input signed [ACC_WIDTH-1:0] bias_din,
+    output reg valid_out,
+    output reg signed [ACC_WIDTH-1:0] out_data,
+    output reg [$clog2(OUT_SIZE)-1:0] out_idx,
+    input ready_in
+);
+    localparam DATA_ADDR_W = $clog2(IN_SIZE);
+    // Rename buffer to avoid reserved keyword 'buf'
+    reg signed [DATA_WIDTH-1:0] data_buf [0:IN_SIZE-1];
+    reg [DATA_ADDR_W:0] dcnt, wcnt;
+    reg [$clog2(OUT_SIZE)-1:0] ocnt;
+    reg signed [ACC_WIDTH-1:0] acc;
+    reg [1:0] state;
+    localparam IDLE=0, LOAD=1, MAC=2, OUTP=3;
+    always @(posedge clk) begin
+        if (reset) begin
+            state<=IDLE; dcnt<=0; wcnt<=0; ocnt<=0;
+            valid_out<=0; weight_en<=0; acc<=0;
+        end else begin
+            case(state)
+              IDLE: if(start) state<=LOAD;
+              LOAD: if(valid_in && ready_in) begin
+                        data_buf[dcnt]<=data_in;
+                        dcnt<=dcnt+1;
+                        if(dcnt+1==IN_SIZE) state<=MAC;
+                    end
+              MAC: begin
+                        weight_addr<=ocnt*IN_SIZE + wcnt;
+                        weight_en<=1;
+                        acc<=acc + data_buf[wcnt]*weight_din;
+                        wcnt<=wcnt+1;
+                        if(wcnt+1==IN_SIZE) begin
+                            weight_en<=0;
+                            bias_addr<=ocnt;
+                            state<=OUTP;
+                        end
+                    end
+              OUTP: begin
+                        out_data<=acc + bias_din;
+                        out_idx<=ocnt;
+                        valid_out<=1;
+                        if(ocnt+1==OUT_SIZE) state<=IDLE;
+                        else begin
+                            ocnt<=ocnt+1;
+                            wcnt<=0; acc<=0;
+                            valid_out<=0;
+                            state<=MAC;
+                        end
+                    end
+            endcase
+        end
+    end
+endmodule

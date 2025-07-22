@@ -1,0 +1,6 @@
+
+State Machine - |softmax|state
+Name state.IDLE state.OUTP state.SCAN 
+state.IDLE 0 0 0 
+state.SCAN 1 0 1 
+state.OUTP 1 1 0 

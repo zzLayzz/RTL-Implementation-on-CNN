@@ -1,0 +1,161 @@
+{
+	"partitions" : [
+		{
+			"name" : "Top",
+			"pins" : [
+				{
+					"name" : "valid_out",
+					"strict" : false
+				},
+				{
+					"name" : "class_idx[0]",
+					"strict" : false
+				},
+				{
+					"name" : "class_idx[1]",
+					"strict" : false
+				},
+				{
+					"name" : "class_idx[2]",
+					"strict" : false
+				},
+				{
+					"name" : "class_idx[3]",
+					"strict" : false
+				},
+				{
+					"name" : "clk",
+					"strict" : false
+				},
+				{
+					"name" : "reset",
+					"strict" : false
+				},
+				{
+					"name" : "valid_in",
+					"strict" : false
+				},
+				{
+					"name" : "ready_in",
+					"strict" : false
+				},
+				{
+					"name" : "logit_idx[0]",
+					"strict" : false
+				},
+				{
+					"name" : "logit_in[4]",
+					"strict" : false
+				},
+				{
+					"name" : "logit_in[7]",
+					"strict" : false
+				},
+				{
+					"name" : "logit_in[6]",
+					"strict" : false
+				},
+				{
+					"name" : "logit_in[5]",
+					"strict" : false
+				},
+				{
+					"name" : "logit_in[1]",
+					"strict" : false
+				},
+				{
+					"name" : "logit_in[0]",
+					"strict" : false
+				},
+				{
+					"name" : "logit_in[3]",
+					"strict" : false
+				},
+				{
+					"name" : "logit_in[2]",
+					"strict" : false
+				},
+				{
+					"name" : "logit_in[14]",
+					"strict" : false
+				},
+				{
+					"name" : "logit_in[13]",
+					"strict" : false
+				},
+				{
+					"name" : "logit_in[12]",
+					"strict" : false
+				},
+				{
+					"name" : "logit_in[11]",
+					"strict" : false
+				},
+				{
+					"name" : "logit_in[9]",
+					"strict" : false
+				},
+				{
+					"name" : "logit_in[10]",
+					"strict" : false
+				},
+				{
+					"name" : "logit_in[8]",
+					"strict" : false
+				},
+				{
+					"name" : "logit_in[18]",
+					"strict" : false
+				},
+				{
+					"name" : "logit_in[21]",
+					"strict" : false
+				},
+				{
+					"name" : "logit_in[20]",
+					"strict" : false
+				},
+				{
+					"name" : "logit_in[19]",
+					"strict" : false
+				},
+				{
+					"name" : "logit_in[17]",
+					"strict" : false
+				},
+				{
+					"name" : "logit_in[16]",
+					"strict" : false
+				},
+				{
+					"name" : "logit_in[15]",
+					"strict" : false
+				},
+				{
+					"name" : "logit_in[23]",
+					"strict" : false
+				},
+				{
+					"name" : "logit_in[22]",
+					"strict" : false
+				},
+				{
+					"name" : "logit_idx[1]",
+					"strict" : false
+				},
+				{
+					"name" : "logit_idx[2]",
+					"strict" : false
+				},
+				{
+					"name" : "logit_idx[3]",
+					"strict" : false
+				},
+				{
+					"name" : "start",
+					"strict" : false
+				}
+			]
+		}
+	]
+}

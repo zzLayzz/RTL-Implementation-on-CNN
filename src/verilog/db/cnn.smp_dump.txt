@@ -1,0 +1,16 @@
+
+State Machine - |cnn|fc_layer:fc2|state
+Name state.BIAS state.MAC state.LOAD state.IDLE state.OUTP 
+state.IDLE 0 0 0 0 0 
+state.LOAD 0 0 1 1 0 
+state.MAC 0 1 0 1 0 
+state.BIAS 1 0 0 1 0 
+state.OUTP 0 0 0 1 1 
+
+State Machine - |cnn|fc_layer:fc1|state
+Name state.BIAS state.MAC state.LOAD state.IDLE state.OUTP 
+state.IDLE 0 0 0 0 0 
+state.LOAD 0 0 1 1 0 
+state.MAC 0 1 0 1 0 
+state.BIAS 1 0 0 1 0 
+state.OUTP 0 0 0 1 1 
